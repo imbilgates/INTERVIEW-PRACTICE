@@ -11,13 +11,21 @@ const ToDo = () => {
             alert('Please enter a task');
             return;
         }
-        setTodoList([...todoList, list]);
+        setTodoList([...todoList, { list, isCompleted: false }]);
         setList('');
     }
 
     const handleRemove = (index) => {
         const updatedList = todoList.filter((_, i) => i !== index);
         setTodoList(updatedList);
+    }
+
+    const handleStrike = (index) => {
+
+        const updatedList = todoList.map((item, i) =>
+            i == index ? { ...item, isCompleted: !item.isCompleted } : item
+        );
+        setTodoList(updatedList)
     }
 
     return (
@@ -37,17 +45,21 @@ const ToDo = () => {
                     </div>
                 ) : (
                     <div className="container mt-5">
-                        <div className="row justify-content-center">
-                            <div className="col-12 col-sm-8 col-md-6 col-lg-4">
-                                <ol className="list-group list-group-numbered">
+                        <div className="d-flex justify-content-center">
+                            <div className="col-8">
+                                <ol className="list-group list-group-flush">
                                     {todoList.map((item, index) => (
                                         <li
                                             key={index}
-                                            className="list-group-item d-flex justify-content-between align-items-center"
+                                            className={
+                                                `list-group-item user-select-none
+                                                ${item.isCompleted && "text-decoration-line-through"}`
+                                            }
+                                            onDoubleClick={() => handleStrike(index)}
                                         >
-                                            {item}
+                                            {item.list}
                                             <button
-                                                className="btn-close"
+                                                className="btn-close float-end text-bg-danger"
                                                 aria-label="Remove"
                                                 onClick={() => handleRemove(index)}
                                             ></button>
