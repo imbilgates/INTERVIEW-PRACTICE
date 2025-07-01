@@ -5,12 +5,17 @@ const ApiSampleFetch = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [buttonLoading, setButtonLoading] = useState(false);
+
 
     const random = Math.floor(Math.random() * 100) + 1;
 
-    const fetchData = async () => {
+    const fetchData = async (frombutton = false) => {
+        if (frombutton) {
+            setButtonLoading(true);
+        }
         try {
-            const res = await fetch(`https://official-joke-api.appspot.com/jokes/random`)
+            const res = await fetch(`https://v2.jokeapi.dev/joke/Any`)
             if (!res.ok) {
                 throw new Error("Network response was not ok");
             }
@@ -23,6 +28,7 @@ const ApiSampleFetch = () => {
             setLoading(false);
         } finally {
             setLoading(false);
+            setButtonLoading(false);
         }
     }
 
@@ -31,17 +37,17 @@ const ApiSampleFetch = () => {
     }, [])
 
     const handleButton = () => {
-        fetchData();
+        fetchData(true);
     }
 
     if (loading) {
         return <>
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+                <span className="ms-3">Loading data...</span>
             </div>
-            <span className="ms-3">Loading data...</span>
-        </div>
         </>;
     }
 
@@ -60,22 +66,32 @@ const ApiSampleFetch = () => {
                     <div className="card-body">
                         <h5 className="card-title text-primary">Joke Type: {data.type}</h5>
                         <h6 className="card-subtitle mb-2 text-muted">Here's a joke for you:</h6>
+                        {buttonLoading ? (
+                            <>
+                                <span className="placeholder col-6"></span>
+                                <span className="placeholder w-75"></span>
+                            </>
+
+                        ) : (
                         <p className="card-text">
-                            <strong>{data.setup}</strong><br />
-                            <em>{data.punchline}</em>
+                            <strong>{data.setup || data.joke}</strong><br />
+                            <em>{data.delivery || data.category}</em>
                         </p>
+                        )}
+
                     </div>
-                </div>
+                </div >
             )}
 
 
             <div className="d-flex justify-content-center mt-4">
                 <button
                     onClick={handleButton}
-                    className='btn btn-info'>click me for random joke
+                    className='btn btn-info'>
+                    {buttonLoading ? 'Loading Joke...' : 'Click me for a random joke'}
                 </button>
             </div>
-        </div>
+        </div >
     );
 
 }
