@@ -7,7 +7,6 @@ const ApiSampleFetch = () => {
     const [loading, setLoading] = useState(true);
     const [buttonLoading, setButtonLoading] = useState(false);
 
-
     const random = Math.floor(Math.random() * 100) + 1;
 
     const fetchData = async (frombutton = false) => {
